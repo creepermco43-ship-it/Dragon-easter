@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon MC | Official Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #07070a;
+            --bg-secondary: #0d0d14;
+            --bg-card: #13131d;
+            --primary: #a855f7;
+            --primary-hover: #9333ea;
+            --primary-glow: rgba(168, 85, 247, 0.4);
+            --border-color: #232336;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --mc-gold: #fbbf24;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+
+        body::before {
+            content: ''; position: fixed; top: -20%; left: 50%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 60%);
+            transform: translateX(-50%); z-index: -1; opacity: 0.3; filter: blur(100px);
+            animation: pulseGlow 8s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.2; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0.4; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .navbar {
+            background-color: rgba(13, 13, 20, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; top: 0; z-index: 100;
+            padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .nav-brand { font-size: 1.6rem; font-weight: 900; color: #fff; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 15px var(--primary-glow); }
+        .nav-brand span { color: var(--primary); }
+        .nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .nav-btn { background: transparent; border: 1px solid transparent; color: var(--text-muted); font-size: 0.95rem; font-weight: 600; cursor: pointer; padding: 8px 18px; border-radius: 6px; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-btn:hover, .nav-btn.active { background: rgba(168, 85, 247, 0.1); border-color: var(--primary); color: #fff; box-shadow: 0 0 15px var(--primary-glow); }
+
+        .page { display: none; min-height: 80vh; padding-bottom: 50px; }
+        .page.active { display: block; animation: fadeUp 0.5s ease-out; }
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+
+        .hero { text-align: center; padding: 80px 20px; background: linear-gradient(180deg, rgba(168,85,247,0.05) 0%, var(--bg-main) 100%); border-bottom: 1px solid var(--border-color); position: relative; }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 0 0 20px var(--primary-glow); }
+        .hero p { color: var(--text-muted); font-size: 1.2rem; max-width: 650px; margin: 0 auto 40px auto; }
+        
+        .ip-box { display: inline-block; background: rgba(0,0,0,0.6); border: 1px solid var(--primary); padding: 15px 30px; border-radius: 8px; font-family: monospace; font-size: 1.4rem; color: #fff; cursor: pointer; transition: 0.3s; margin-bottom: 20px; box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); }
+        .ip-box:hover { background: rgba(168,85,247,0.1); transform: translateY(-3px); box-shadow: 0 0 30px var(--primary-glow); }
+        .ip-hint { display: block; font-size: 0.85rem; color: var(--primary); margin-top: 8px; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 40px; }
+        .info-panel { background: var(--bg-card); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color); text-align: left; }
+        .info-panel h3 { color: var(--primary); font-size: 1.2rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .info-panel p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .store-header { text-align: center; margin-bottom: 60px; }
+        .store-header h2 { font-size: 3rem; font-weight: 900; color: #fff; text-transform: uppercase; margin-bottom: 15px; letter-spacing: -1px; }
+        .store-header p { color: var(--text-muted); font-size: 1.15rem; max-width: 700px; margin: 0 auto; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 35px 30px; transition: 0.3s; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--border-color); transition: 0.3s; }
+        .card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 20px var(--primary-glow); }
+        .card:hover::before { background: var(--primary); box-shadow: 0 0 15px var(--primary); }
+        
+        .card-header { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 25px; }
+        .card-header h3 { font-size: 1.8rem; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .badge { display: inline-block; background: rgba(168, 85, 247, 0.15); color: var(--primary); font-size: 0.75rem; font-weight: 800; padding: 6px 12px; border-radius: 4px; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(168, 85, 247, 0.3); }
+        
+        .perks-list { list-style: none; flex-grow: 1; margin-bottom: 30px; }
+        .perks-list li { color: var(--text-muted); font-size: 1rem; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; }
+        .perks-list li::before { content: '✦'; color: var(--primary); font-size: 1.2rem; line-height: 1; }
+
+        .price-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 25px; }
+        .price { font-size: 2.2rem; font-weight: 900; color: #fff; line-height: 1; }
+        .old-price { font-size: 1.2rem; color: #ef4444; text-decoration: line-through; margin-right: 10px; font-weight: 600; opacity: 0.8; }
+
+        .buy-btn { background: var(--primary); color: #fff; width: 100%; padding: 16px; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px var(--primary-glow); }
+        .buy-btn:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(168, 85, 247, 0.6); }
+
+        .special-card { border-color: var(--mc-gold); }
+        .special-card::before { background: var(--mc-gold); }
+        .special-card:hover { border-color: var(--mc-gold); box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 20px rgba(251, 191, 36, 0.2); }
+        .special-card .badge { background: rgba(251, 191, 36, 0.1); color: var(--mc-gold); border-color: rgba(251, 191, 36, 0.3); }
+        .special-card .perks-list li::before { color: var(--mc-gold); }
+        .special-card .buy-btn { background: var(--mc-gold); color: #000; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); }
+        .special-card .buy-btn:hover { background: #f59e0b; box-shadow: 0 8px 25px rgba(251, 191, 36, 0.5); }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 1000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px); }
+        .modal { background: var(--bg-card); padding: 40px; border-radius: 12px; width: 100%; max-width: 480px; border: 1px solid var(--primary); box-shadow: 0 0 40px var(--primary-glow); animation: fadeUp 0.3s ease-out; }
+        .modal-header { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 25px; }
+        .modal-header h2 { color: #fff; font-size: 1.8rem; margin-bottom: 5px; font-weight: 900; text-transform: uppercase; }
+        .modal-header p { color: var(--primary); font-weight: 700; font-size: 1.1rem; }
+        
+        .input-group { margin-bottom: 25px; }
+        .input-group label { display: block; color: #fff; margin-bottom: 10px; font-weight: 600; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group input { width: 100%; padding: 15px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: white; font-size: 1.1rem; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
+        .help-text { font-size: 0.85rem; color: var(--mc-gold); margin-top: 10px; display: block; background: rgba(251, 191, 36, 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid var(--mc-gold); line-height: 1.5; }
+
+        .modal-btns { display: flex; gap: 15px; margin-top: 35px; }
+        .btn-cancel { flex: 1; background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 15px; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.3s; text-transform: uppercase; }
+        .btn-cancel:hover { background: var(--border-color); color: #fff; }
+        .btn-proceed { flex: 2; background: var(--primary); border: none; color: #fff; padding: 15px; border-radius: 6px; cursor: pointer; font-weight: 900; font-size: 1.05rem; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 15px var(--primary-glow); }
+        .btn-proceed:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(168, 85, 247, 0.6); }
+
+        footer { text-align: center; padding: 50px 20px; background: var(--bg-secondary); border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.95rem; }
+        footer span { color: var(--primary); font-weight: bold; }
+        footer p { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">🐉 Dragon<span>MC</span></div>
+        <div class="nav-links">
+            <button class="nav-btn active" onclick="switchTab('home')">Home</button>
+            <button class="nav-btn" onclick="switchTab('ranks')">Ranks</button>
+            <button class="nav-btn" onclick="switchTab('coins')">Coins</button>
+        </div>
+    </nav>
+
+    <main id="home" class="page active">
+        <section class="hero">
+            <h1>Upgrade Your Journey</h1>
+            <p>Welcome to the official Dragon MC webstore. By purchasing packages here, you directly support the server's development, hosting costs, and future updates. Experience the server like never before!</p>
+            
+            <div class="ip-box" onclick="copyIP()">
+                play.dragonmc.pro
+                <span class="ip-hint" id="copy-text">Click to copy IP Address</span>
+            </div>
+            <br>
+            <a href="https://discord.gg/jNZecgqAkb" target="_blank" style="display: inline-block; background: #5865F2; color: white; text-decoration: none; padding: 14px 30px; border-radius: 6px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.3s; box-shadow: 0 5px 20px rgba(88, 101, 242, 0.4);">Join Discord Community</a>
+        </section>
+
+        <div class="container">
+            <div class="store-header" style="margin-bottom: 30px;">
+                <h2 style="font-size: 2.2rem;">Why Support Us?</h2>
+            </div>
+            <div class="info-grid">
+                <div class="info-panel">
+                    <h3>⚡ Instant Delivery</h3>
+                    <p>Our systems are fully automated. Once your payment is verified via Discord tickets, your ranks and coins are applied to your account almost instantly.</p>
+                </div>
+                <div class="info-panel">
+                    <h3>🔒 Secure Payments</h3>
+                    <p>All transactions are handled securely through verified payment gateways integrated within our official Discord ticketing system. We never store your sensitive data.</p>
+                </div>
+                <div class="info-panel">
+                    <h3>🛠️ Dedicated Support</h3>
+                    <p>Running into issues? Our dedicated administration team is available 24/7 on Discord to assist you with any billing or package-related queries.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <main id="ranks" class="page container">
+        <div class="store-header">
+            <h2>Premium Ranks</h2>
+            <p>Unlock exclusive perks, commands, and awesome benefits by purchasing ranks. Stand out in the chat and dominate the server with powerful kits and abilities!</p>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Blaze</h3>
+                    <span class="badge">Permanent</span>
+                </div>
+                <ul class="perks-list">
+                    <li>Exclusive [Blaze] Prefix</li>
+                    <li>Access to Basic Kits</li>
+                    <li>Set up to 3 Homes</li>
+                    <li>White chat text color</li>
+                </ul>
+                <div class="price-row">
+                    <div class="price">₹100</div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Blaze Rank', 100)">Purchase</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Alpha</h3>
+                    <span class="badge">Permanent</span>
+                </div>
+                <ul class="perks-list">
+                    <li>Exclusive [Alpha] Prefix</li>
+                    <li>Access to Alpha Kits</li>
+                    <li>Set up to 5 Homes</li>
+                    <li>Bypass chat cooldowns</li>
+                    <li>Access to /feed command</li>
+                </ul>
+                <div class="price-row">
+                    <div class="price">₹200</div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Alpha Rank', 200)">Purchase</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Ninja</h3>
+                    <span class="badge">Permanent</span>
+                </div>
+                <ul class="perks-list">
+                    <li>Exclusive [Ninja] Prefix</li>
+                    <li>Premium Stealth Kits</li>
+                    <li>Set up to 7 Homes</li>
+                    <li>Priority Server Join</li>
+                    <li>Speed Boost in Hub</li>
+                </ul>
+                <div class="price-row">
+                    <div class="price">₹300</div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Ninja Rank', 300)">Purchase</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Wizard</h3>
+                    <span class="badge">Permanent</span>
+                </div>
+                <ul class="perks-list">
+                    <li>Exclusive [Wizard] Prefix</li>
+                    <li>OP Magical Kits</li>
+                    <li>Access to /fly in Lobby</li>
+                    <li>Epic Particle Trails</li>
+                    <li>Keep XP on death</li>
+                </ul>
+                <div class="price-row">
+                    <div class="price">₹400</div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Wizard Rank', 400)">Purchase</button>
+            </div>
+
+            <div class="card special-card">
+                <div class="card-header">
+                    <h3 style="color: var(--mc-gold);">Warrior</h3>
+                    <span class="badge">Special Offer</span>
+                </div>
+                <ul class="perks-list">
+                    <li>Epic [Warrior] Chat Prefix</li>
+                    <li>Ultimate Warrior Kit Access</li>
+                    <li>Set up to 15 Homes</li>
+                    <li>Access to /heal and /repair</li>
+                    <li>All previous rank perks included!</li>
+                </ul>
+                <div class="price-row">
+                    <div class="price"><span class="old-price">₹600</span> ₹500</div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Warrior Rank', 500)">Purchase Offer</button>
+            </div>
+        </div>
+    </main>
+
+    <main id="coins" class="page container">
+        <div class="store-header">
+            <h2>Dragon Coins</h2>
+            <p>Purchase coins to unlock exclusive items, perks, crates, and awesome features across the server! Every purchase helps us improve.</p>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>100 Coins</h3>
+                    <span class="badge">Consumable</span>
+                </div>
+                <ul class="perks-list"><li>Instantly applied to balance</li><li>Perfect for small items</li></ul>
+                <div class="price-row"><div class="price">₹30</div></div>
+                <button class="buy-btn" onclick="openModal('100 Coins', 30)">Purchase</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>250 Coins</h3>
+                    <span class="badge">Consumable</span>
+                </div>
+                <ul class="perks-list"><li>Instantly applied to balance</li><li>Good for basic crates</li></ul>
+                <div class="price-row"><div class="price">₹60</div></div>
+                <button class="buy-btn" onclick="openModal('250 Coins', 60)">Purchase</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>400 Coins</h3>
+                    <span class="badge">Consumable</span>
+                </div>
+                <ul class="perks-list"><li>Instantly applied to balance</li><li>Unlock mid-tier crates</li></ul>
+                <div class="price-row"><div class="price">₹80</div></div>
+                <button class="buy-btn" onclick="openModal('400 Coins', 80)">Purchase</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>650 Coins</h3>
+                    <span class="badge">Consumable</span>
+                </div>
+                <ul class="perks-list"><li>Instantly applied to balance</li><li>Buy better gear & keys</li></ul>
+                <div class="price-row"><div class="price">₹110</div></div>
+                <button class="buy-btn" onclick="openModal('650 Coins', 110)">Purchase</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>850 Coins</h3>
+                    <span class="badge">Consumable</span>
+                </div>
+                <ul class="perks-list"><li>Instantly applied to balance</li><li>Great value for money</li></ul>
+                <div class="price-row"><div class="price">₹150</div></div>
+                <button class="buy-btn" onclick="openModal('850 Coins', 150)">Purchase</button>
+            </div>
+
+            <div class="card special-card">
+                <div class="card-header">
+                    <h3 style="color: var(--mc-gold);">1000 Coins</h3>
+                    <span class="badge">Best Value</span>
+                </div>
+                <ul class="perks-list"><li>Massive wealth boost</li><li>Buy spawners & rare keys</li><li>Flex your richness!</li></ul>
+                <div class="price-row"><div class="price">₹200</div></div>
+                <button class="buy-btn" onclick="openModal('1000 Coins', 200)">Purchase</button>
+            </div>
+        </div>
+
+        <div class="store-header" style="margin-top: 80px; margin-bottom: 30px;">
+            <h2 style="font-size: 2rem;">Frequently Asked Questions</h2>
+        </div>
+        <div class="info-grid" style="margin-top: 0;">
+            <div class="info-panel">
+                <h3>❓ How long does it take?</h3>
+                <p>Packages are usually applied within 5-10 minutes after an Admin verifies your payment screenshot in the Discord ticket.</p>
+            </div>
+            <div class="info-panel">
+                <h3>❓ Do I lose ranks on reset?</h3>
+                <p>No! All Ranks purchased here are lifetime global ranks. Even if the server resets a season, your rank stays with you forever.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Copyright © 2026 <span>Dragon MC</span>. All rights reserved.</p>
+        <p style="font-size: 0.8rem; opacity: 0.6;">Not affiliated with Mojang AB. TEAM DRAGON 🐉</p>
+    </footer>
+    <div class="modal-overlay" id="buyModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Checkout System</h2>
+                <p id="modalPlanDesc">Selected: [Item]</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="mcUsername">Minecraft Username</label>
+                <input type="text" id="mcUsername" placeholder="e.g. Notch or .Steve" autocomplete="off">
+                <span class="help-text"><strong>ATTENTION BEDROCK PLAYERS:</strong><br>You MUST put a dot (.) before your username (example: <em>.Steve</em>) for the automated system to recognize your account.</span>
+            </div>
+
+            <div class="input-group">
+                <label for="dcUsername">Discord Username</label>
+                <input type="text" id="dcUsername" placeholder="e.g. ayx_gaming" autocomplete="off">
+            </div>
+
+            <div class="modal-btns">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-proceed" onclick="proceedToDiscord()">Secure Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const targetPage = document.getElementById(tabId);
+            targetPage.classList.add('active');
+            
+            const clickedBtn = Array.from(document.querySelectorAll('.nav-btn'))
+                                   .find(btn => btn.getAttribute('onclick') === `switchTab('${tabId}')`);
+            if(clickedBtn) clickedBtn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyIP() {
+            navigator.clipboard.writeText("play.dragonmc.pro");
+            const textEl = document.getElementById("copy-text");
+            textEl.innerText = "IP Copied Successfully! ✓";
+            textEl.style.color = "#a855f7";
+            setTimeout(() => {
+                textEl.innerText = "Click to copy IP Address";
+                textEl.style.color = "var(--primary)";
+            }, 2500);
+        }
+
+        let currentItem = "";
+        
+        function openModal(itemName, price) {
+            currentItem = itemName;
+            document.getElementById('modalPlanDesc').innerText = `Selected Package: ${itemName} (₹${price})`;
+            document.getElementById('buyModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('buyModal').style.display = 'none';
+            document.getElementById('mcUsername').value = '';
+            document.getElementById('dcUsername').value = '';
+        }
+
+        function proceedToDiscord() {
+            let mcName = document.getElementById('mcUsername').value.trim();
+            let dcName = document.getElementById('dcUsername').value.trim();
+
+            if (mcName === "" || dcName === "") {
+                alert("❌ ERROR: Minecraft and Discord usernames are required to generate your checkout ticket.");
+                return;
+            }
+
+            alert(`✅ AUTHENTICATION SUCCESSFUL!\n\nUser: ${mcName}\n\n⚠️ IMPORTANT ACTION REQUIRED:\nYou are now being securely redirected to our Discord server.\nTo complete the purchase of [${currentItem}], you MUST CREATE A TICKET in the channel immediately.`);
+            
+            window.location.href = "https://discord.com/channels/1396467091485364234/1474342978175766631";
+        }
+    </script>
+</body>
+</html>
